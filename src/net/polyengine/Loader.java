@@ -1,6 +1,7 @@
 package net.polyengine;
 
-import net.polyengine.exceptions.ParseException;
+import com.sun.istack.internal.NotNull;
+import net.polyengine.exception.ParseException;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public final class Loader {
 	private boolean finished = false;
 	private int loadedEntities = 0;
 
-	Loader(World world, InputStream input) {
+	Loader(@NotNull World world, InputStream input) {
 		this.world = world;
 		this.input = input;
 
@@ -68,16 +69,11 @@ public final class Loader {
 			throw new RuntimeException("IO error while creating loader: " + e.getMessage());
 		}
 
-		if (Engine.config.containsKey("parser")) {
-			for (String parserName : Engine.config.get("parser").split("\\s+")) {
-				parserName = parserName.trim();
-				if (parserName.isEmpty()) continue;
-				Class<? extends Parser> parserClass = getParserClassForName(parserName);
-				parsers.add(Parser.newParser(parserClass, this));
-			}
-		} else {
-			// TODO: Error handling
-			throw new RuntimeException("No parser set in config.");
+		for (String parserName : Engine.getConfig().require("parser").split("\\s+")) {
+			parserName = parserName.trim();
+			if (parserName.isEmpty()) continue;
+			Class<? extends Parser> parserClass = getParserClassForName(parserName);
+			parsers.add(Parser.newParser(parserClass, this));
 		}
 	}
 
@@ -156,7 +152,7 @@ public final class Loader {
 		if (!entityEntryIterator.hasNext()) loading = false;
 	}
 
-	public Object parse(Class<?> type, InputStream input) throws IOException, ParseException {
+	public Object parse(@NotNull Class<?> type, @NotNull InputStream input) throws IOException, ParseException {
 		if (type == Entity.class) {
 			return entitiesById.get(new DataInputStream(input).readInt());
 		}

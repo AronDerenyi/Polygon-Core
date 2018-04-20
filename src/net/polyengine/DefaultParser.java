@@ -1,6 +1,7 @@
 package net.polyengine;
 
-import net.polyengine.exceptions.ParseException;
+import com.sun.istack.internal.NotNull;
+import net.polyengine.exception.ParseException;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.lang.reflect.Array;
 public final class DefaultParser extends Parser {
 
 	@Override
-	public Object parse(Class<?> type, InputStream input) throws IOException, ParseException {
+	public Object parse(@NotNull Class<?> type, @NotNull InputStream input) throws IOException, ParseException {
 		if (type == boolean.class || type == Boolean.class) {
 			// Boolean
 			return new DataInputStream(input).readBoolean();

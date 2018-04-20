@@ -1,5 +1,7 @@
 package net.polyengine;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,10 +38,8 @@ public final class Entity {
 
 
 	void register() {
-		// TODO: Error handling
-		if (registered) throw new RuntimeException();
-		if (binned) throw new RuntimeException();
-		if (destroyed) throw new RuntimeException();
+		assert(!registered && !binned && !destroyed);
+		assert(world.isRegistered() && !world.isDestroyed());
 
 		world.mEntities.add(this);
 		registered = true;
@@ -49,6 +49,8 @@ public final class Entity {
 		// TODO: Error handling
 		if (!registered) throw new RuntimeException("The entity hasn't been registered.");
 		if (destroyed) throw new RuntimeException("The entity has already been destroyed.");
+
+		assert(world.isRegistered() && !world.isDestroyed());
 
 		if (!binned) {
 			Engine.destroyingEntities.add(this);
@@ -60,10 +62,7 @@ public final class Entity {
 
 
 	void performDestroy() {
-		// TODO: Error handling
-		if (!registered) throw new RuntimeException();
-		if (!binned) throw new RuntimeException();
-		if (destroyed) throw new RuntimeException();
+		assert(registered && binned && !destroyed);
 
 		world.mEntities.remove(this);
 		mComponents.clear();
@@ -74,7 +73,7 @@ public final class Entity {
 
 
 
-	public <T extends Component> T addComponent(Class<T> componentClass) {
+	public <T extends Component> T addComponent(@NotNull Class<T> componentClass) {
 		// TODO: Error handling
 		if (!registered) throw new RuntimeException("The entity hasn't been registered.");
 		if (destroyed) throw new RuntimeException("The entity has been destroyed.");
@@ -86,7 +85,7 @@ public final class Entity {
 
 
 
-	public <T extends Component> T getComponent(Class<T> componentClass) {
+	public <T extends Component> T getComponent(@NotNull Class<T> componentClass) {
 		for (Component component : components) {
 			if (componentClass.isInstance(component)) {
 				return componentClass.cast(component);
@@ -95,7 +94,7 @@ public final class Entity {
 		return null;
 	}
 
-	public <T extends Component> List<T> getComponents(Class<T> componentClass) {
+	public <T extends Component> List<T> getComponents(@NotNull Class<T> componentClass) {
 		List<T> components = new ArrayList<>();
 		for (Component component : this.components) {
 			if (componentClass.isInstance(component)) {

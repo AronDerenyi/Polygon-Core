@@ -1,10 +1,12 @@
 package net.polyengine;
 
+import com.sun.istack.internal.NotNull;
+
 public abstract class Manager {
 
 	private static World paramWorld;
 
-	static <T extends Manager> T newManager(Class<T> managerClass, World world) {
+	static <T extends Manager> T newManager(@NotNull Class<T> managerClass, @NotNull World world) {
 		if (!Manager.class.isAssignableFrom(managerClass)) {
 			//TODO: Error handling
 			throw new RuntimeException(managerClass.getName() + " isn't a manager class.");
@@ -30,9 +32,9 @@ public abstract class Manager {
 
 	public void init() {}
 
-	public void subscribe(Component component) {}
+	public void subscribe(@NotNull Component component) {}
 
-	public void unsubscribe(Component component) {}
+	public void unsubscribe(@NotNull Component component) {}
 
 	public void update() {}
 

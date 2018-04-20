@@ -1,11 +1,13 @@
 package net.polyengine;
 
+import com.sun.istack.internal.NotNull;
+
 public abstract class Component {
 
 	private static Entity paramEntity;
 	private static World paramWorld;
 
-	static <T extends Component> T newComponent(Class<T> componentClass, Entity entity) {
+	static <T extends Component> T newComponent(@NotNull Class<T> componentClass, @NotNull Entity entity) {
 		if (!Component.class.isAssignableFrom(componentClass)) {
 			//TODO: Error handling
 			throw new RuntimeException(componentClass.getName() + " isn't a component class.");
@@ -56,11 +58,9 @@ public abstract class Component {
 
 
 	final void register() {
-		// TODO: Error handling
-		if (registered) throw new RuntimeException();
-		if (initialized) throw new RuntimeException();
-		if (binned) throw new RuntimeException();
-		if (destroyed) throw new RuntimeException();
+		assert(!registered && !initialized && !binned && !destroyed);
+		assert(entity.isRegistered() && !entity.isDestroyed());
+		assert(world.isRegistered() && !world.isDestroyed());
 
 		entity.mComponents.add(this);
 		Engine.initializingComponents.add(this);
@@ -72,6 +72,9 @@ public abstract class Component {
 		if (!registered) throw new RuntimeException("The component hasn't been registered.");
 		if (destroyed) throw new RuntimeException("The component has already been destroyed.");
 
+		assert(entity.isRegistered() && !entity.isDestroyed());
+		assert(world.isRegistered() && !world.isDestroyed());
+
 		if (!binned) {
 			Engine.terminatingComponents.add(this);
 			Engine.destroyingComponents.add(this);
@@ -82,36 +85,31 @@ public abstract class Component {
 
 
 	final void performInit() {
-		// TODO: Error handling
-		if (!registered) throw new RuntimeException();
-		if (initialized) throw new RuntimeException();
+		assert(registered && !initialized);
+		assert(entity.isRegistered() && !entity.isDestroyed());
+		assert(world.isRegistered() && world.isInitialized() && !world.isDestroyed());
 
 		if (!destroyed) {
 			init();
 			initialized = true;
-			for (Manager manager : world.managers) manager.subscribe(this);
+			for (Manager manager : world.mListeningManagers) manager.subscribe(this);
 		}
 	}
 
 	final void performTerm() {
-		// TODO: Error handling
-		if (!registered) throw new RuntimeException();
-		if (!binned) throw new RuntimeException();
-		if (destroyed) throw new RuntimeException();
+		assert(registered && binned && !destroyed);
+		assert(entity.isRegistered() && !entity.isDestroyed());
+		assert(world.isRegistered() && world.isInitialized() && !world.isDestroyed());
 
 		if (initialized) {
-			for (Manager manager : world.managers) manager.unsubscribe(this);
+			for (Manager manager : world.mListeningManagers) manager.unsubscribe(this);
 			term();
 			initialized = false;
 		}
 	}
 
 	final void performDestroy() {
-		// TODO: Error handling
-		if (!registered) throw new RuntimeException();
-		if (initialized) throw new RuntimeException();
-		if (!binned) throw new RuntimeException();
-		if (destroyed) throw new RuntimeException();
+		assert(registered && !initialized && binned && !destroyed);
 
 		entity.mComponents.remove(this);
 		registered = false;

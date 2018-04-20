@@ -1,5 +1,7 @@
 package net.polyengine;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.*;
 
 public final class DefaultManager extends Manager {
@@ -7,12 +9,12 @@ public final class DefaultManager extends Manager {
 	private final Set<Updatable> updatables = new LinkedHashSet<>();
 
 	@Override
-	public void subscribe(Component component) {
+	public void subscribe(@NotNull Component component) {
 		if (component.isInitialized() && component instanceof Updatable) updatables.add((Updatable) component);
 	}
 
 	@Override
-	public void unsubscribe(Component component) {
+	public void unsubscribe(@NotNull Component component) {
 		if (component.isInitialized() && component instanceof Updatable) updatables.remove(component);
 	}
 

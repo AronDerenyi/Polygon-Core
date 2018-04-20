@@ -1,6 +1,7 @@
 package net.polyengine;
 
-import net.polyengine.exceptions.ParseException;
+import com.sun.istack.internal.NotNull;
+import net.polyengine.exception.ParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +10,7 @@ public abstract class Parser {
 
 	private static Loader paramLoader;
 
-	static <T extends Parser> T newParser(Class<T> parserClass, Loader loader) {
+	static <T extends Parser> T newParser(@NotNull Class<T> parserClass, @NotNull Loader loader) {
 		if (!Parser.class.isAssignableFrom(parserClass)) {
 			//TODO: Error handling
 			throw new RuntimeException(parserClass.getName() + " isn't a parser class.");
@@ -31,5 +32,5 @@ public abstract class Parser {
 
 	public final Loader loader = paramLoader;
 
-	public Object parse(Class<?> type, InputStream input) throws IOException, ParseException { return null; }
+	public Object parse(@NotNull Class<?> type, @NotNull InputStream input) throws IOException, ParseException { return null; }
 }
