@@ -1,6 +1,6 @@
 package net.polyengine
 
-import net.polyengine.listeners.WorldHandler
+import net.polyengine.handlers.WorldHandler
 import java.util.*
 import kotlin.reflect.KClass
 

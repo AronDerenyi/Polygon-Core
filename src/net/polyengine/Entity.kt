@@ -1,6 +1,6 @@
 package net.polyengine
 
-import net.polyengine.listeners.EntityHandler
+import net.polyengine.handlers.EntityHandler
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
