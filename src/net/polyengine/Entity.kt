@@ -1,6 +1,6 @@
 package net.polyengine
 
-import net.polyengine.listeners.EntityListener
+import net.polyengine.listeners.EntityHandler
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
@@ -33,7 +33,7 @@ class Entity internal constructor(val world: World, attributeClasses: List<KClas
 				attributes.forEach { it.init() }
 
 				engine.extensions.forEach {
-					if (it is EntityListener) it.onEntityCreated(this@Entity)
+					if (it is EntityHandler) it.onEntityCreated(this@Entity)
 				}
 			}
 		}
@@ -48,7 +48,7 @@ class Entity internal constructor(val world: World, attributeClasses: List<KClas
 				world.removeEntity(this@Entity)
 
 				engine.extensions.forEach {
-					if (it is EntityListener) it.onEntityDestroyed(this@Entity)
+					if (it is EntityHandler) it.onEntityDestroyed(this@Entity)
 				}
 			}
 		}

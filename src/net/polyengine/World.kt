@@ -1,6 +1,6 @@
 package net.polyengine
 
-import net.polyengine.listeners.WorldListener
+import net.polyengine.listeners.WorldHandler
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -29,7 +29,7 @@ class World internal constructor(val engine: Engine) {
 			engine.addWorld(this@World)
 
 			engine.extensions.forEach {
-				if (it is WorldListener) it.onWorldCreated(this@World)
+				if (it is WorldHandler) it.onWorldCreated(this@World)
 			}
 		}
 	}
@@ -46,7 +46,7 @@ class World internal constructor(val engine: Engine) {
 			engine.removeWorld(this@World)
 
 			engine.extensions.forEach {
-				if (it is WorldListener) it.onWorldDestroyed(this@World)
+				if (it is WorldHandler) it.onWorldDestroyed(this@World)
 			}
 		}
 	}
@@ -57,7 +57,7 @@ class World internal constructor(val engine: Engine) {
 			engine.extensions.forEach {
 				if (!destroyed && !active) {
 					active = true
-					if (it is WorldListener) it.onWorldActivated(this@World)
+					if (it is WorldHandler) it.onWorldActivated(this@World)
 				}
 			}
 		}
@@ -69,7 +69,7 @@ class World internal constructor(val engine: Engine) {
 			engine.extensions.forEach {
 				if (!destroyed && active) {
 					active = false
-					if (it is WorldListener) it.onWorldDeactivated(this@World)
+					if (it is WorldHandler) it.onWorldDeactivated(this@World)
 				}
 			}
 		}

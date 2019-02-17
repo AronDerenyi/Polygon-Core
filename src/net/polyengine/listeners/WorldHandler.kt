@@ -2,7 +2,7 @@ package net.polyengine.listeners
 
 import net.polyengine.World
 
-interface WorldListener {
+interface WorldHandler {
 
 	fun onWorldCreated(world: World)
 	fun onWorldDestroyed(world: World)
